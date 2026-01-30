@@ -66,37 +66,6 @@ void ASpartaPlayerController::SetupInputComponent()
 void ASpartaPlayerController::SwitchingIMC(const FInputActionValue& Value)
 {
     ShowMainMenu(true);
-    /*if (ULocalPlayer* LocalPlayer = GetLocalPlayer())
-    {
-        if (UEnhancedInputLocalPlayerSubsystem* Subsystem =
-            LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
-        {
-            if (InputMappingContext && Subsystem->HasMappingContext(InputMappingContext))
-            {
-                Subsystem->RemoveMappingContext(InputMappingContext);
-                if (InputMappingContext_UI)
-                {
-                    Subsystem->AddMappingContext(InputMappingContext_UI, 0);
-                    if (GEngine)
-                    {
-                        GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Change to InputMappingContext_UI"));
-                    }
-                }
-            }
-            else if (InputMappingContext_UI && Subsystem->HasMappingContext(InputMappingContext_UI))
-            {
-                Subsystem->RemoveMappingContext(InputMappingContext_UI);
-                if (InputMappingContext)
-                {
-                    Subsystem->AddMappingContext(InputMappingContext, 0);
-                    if (GEngine)
-                    {
-                        GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Change to InputMappingContext"));
-                    }
-                }
-            }
-        }
-    }*/
 }
 
 void ASpartaPlayerController::ShowMainMenu(bool bIsRestart)

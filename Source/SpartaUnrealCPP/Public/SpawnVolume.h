@@ -18,10 +18,10 @@ public:
 
 	FVector GetRandomPointInVolume() const;
 	AActor* SpawnItem(TSubclassOf<AActor> ItemClass);
-	FItemSpawnRow* GetRandomItem() const;
+	FItemSpawnRow* GetRandomItem(int32 DBIdx) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Spawning")
-	AActor* SpawnRandomItem();
+	AActor* SpawnRandomItem(int32 DBIdx);
 
 protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Spawning")
@@ -31,7 +31,7 @@ protected:
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawning")
-	UDataTable* ItemDataTable;
+	TArray<TSoftObjectPtr<UDataTable>> ItemDataTables;
 
 	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawning")
 	int32 MaxSpawnCnt;
