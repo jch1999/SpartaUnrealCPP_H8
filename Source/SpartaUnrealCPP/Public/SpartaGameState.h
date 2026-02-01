@@ -68,6 +68,8 @@ protected:
 	TArray<float> WaveDurationArray;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Wave")
 	float WaveWaitDuration;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Wave")
+	bool bIsWaveWating;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Level")
 	TArray<FName> LevelMapNames;

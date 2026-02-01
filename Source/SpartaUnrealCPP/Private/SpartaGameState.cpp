@@ -20,6 +20,8 @@ ASpartaGameState::ASpartaGameState()
     CurrentWaveIndex = 0;
     MaxWave = 3;
     WaveDurationArray = { 60.0f, 45.0f, 30.0f };
+    WaveWaitDuration = 5.0f;
+    bIsWaveWating = true;
     ItemMaxSpawnCntPerWave = { 20, 30, 40 };
 }
 
@@ -97,7 +99,13 @@ void ASpartaGameState::StartLevel()
         }
     }
 
-    StartWave();
+    GetWorldTimerManager().SetTimer(
+        WaveTimerHandle,
+        this,
+        &ASpartaGameState::StartWave,
+        WaveWaitDuration,
+        false
+    );
 }
 
 void ASpartaGameState::EndLevel()
@@ -131,6 +139,7 @@ void ASpartaGameState::EndLevel()
 
 void ASpartaGameState::StartWave()
 {
+    bIsWaveWating = false;
     SpawnedCoinCnt = 0;
     CollectedCoinCnt = 0;
 
@@ -179,6 +188,13 @@ void ASpartaGameState::OnWaveTimeUP()
 void ASpartaGameState::EndWave()
 {
     //Todo. 아이템 전부 제거
+    TArray<AActor*> FoundItems;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABaseItem::StaticClass(), FoundItems);
+    for (auto Item : FoundItems)
+    {
+        Item->Destroy();
+    }
+
     // Todo. 일정 시간 동안 대기 후 다음 레벨 시작
     GetWorldTimerManager().ClearTimer(WaveTimerHandle);
     CurrentWaveIndex++;
@@ -198,6 +214,7 @@ void ASpartaGameState::EndWave()
     }
     else
     {
+        bIsWaveWating = true;
         GetWorldTimerManager().SetTimer(
             WaveTimerHandle,
             this,
@@ -261,7 +278,29 @@ void ASpartaGameState::UpdateHUD()
             {
                 if (UTextBlock* LevelText = Cast<UTextBlock>(HUDWidget->GetWidgetFromName(TEXT("Wave"))))
                 {
-                    LevelText->SetText(FText::FromString(FString::Printf(TEXT("Wave %d"), CurrentLevelIndex + 1)));
+                    if (bIsWaveWating)
+                    {
+                        LevelText->SetText(FText::FromString(FString::Printf(TEXT("Wating..."))));
+                    }
+                    else
+                    {
+                        LevelText->SetText(FText::FromString(FString::Printf(TEXT("Wave %d"), CurrentWaveIndex + 1)));
+                    }
+                }
+            }
+
+            if (UUserWidget* HUDWidget = SpartaPlayerController->GetHUDWidget())
+            {
+                if (UTextBlock* CoinCntText = Cast<UTextBlock>(HUDWidget->GetWidgetFromName(TEXT("CoinCntText"))))
+                {
+                    if (bIsWaveWating)
+                    {
+                        CoinCntText->SetText(FText::FromString(FString::Printf(TEXT(": 0 / 0"))));
+                    }
+                    else
+                    {
+                        CoinCntText->SetText(FText::FromString(FString::Printf(TEXT(": %d / %d"), CollectedCoinCnt, SpawnedCoinCnt)));
+                    }
                 }
             }
         }

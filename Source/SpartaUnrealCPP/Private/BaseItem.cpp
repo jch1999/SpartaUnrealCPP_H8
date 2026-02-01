@@ -80,7 +80,10 @@ void ABaseItem::ActivateItem(AActor* Activator)
 			DestoryParticleTimerHandle,
 			[Particle]()
 			{
-				Particle->DestroyComponent();
+				if (IsValid(Particle))
+				{
+					Particle->DestroyComponent();
+				}
 			},
 			1.0f,
 			false
