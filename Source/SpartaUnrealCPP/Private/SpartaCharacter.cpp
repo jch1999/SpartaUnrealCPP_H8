@@ -10,7 +10,8 @@
 
 ASpartaCharacter::ASpartaCharacter()
 	:JumpCnt(0),
-	MouseSensitivity(1.0f)
+	MouseSensitivity(1.0f),
+	bIsReverse(false)
 {
 	PrimaryActorTick.bCanEverTick = false;
 
@@ -139,11 +140,11 @@ void ASpartaCharacter::Move(const FInputActionValue& Value)
 
 	if (!FMath::IsNearlyZero(MoveInput.X))
 	{
-		AddMovementInput(GetActorForwardVector(), MoveInput.X);
+		AddMovementInput(GetActorForwardVector(), bIsReverse ? -MoveInput.X : MoveInput.X);
 	}
 	if (!FMath::IsNearlyZero(MoveInput.Y))
 	{
-		AddMovementInput(GetActorRightVector(), MoveInput.Y);
+		AddMovementInput(GetActorRightVector(), bIsReverse ? -MoveInput.Y : MoveInput.Y);
 	}
 }
 
@@ -197,6 +198,10 @@ void ASpartaCharacter::AddHealth(float Amount)
 {
 	Health = FMath::Clamp(Health + Amount, 0.0f, MaxHealth);
 	UE_LOG(LogTemp, Warning, TEXT("Health increased to %f"), Health);
+	if (FMath::IsNearlyZero(Health))
+	{
+		OnDeath();
+	}
 	//UpdateOverheadHP();
 }
 

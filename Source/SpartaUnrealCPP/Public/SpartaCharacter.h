@@ -68,8 +68,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float MaxHealth;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move")
+	bool bIsReverse;
+
 private:
 	float NormalSpeed;
 	float SprintSpeedMultiplier;
 	float SprintSpeed;
+
+	FTimerHandle MoveReverseTimer;
 };
