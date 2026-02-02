@@ -1,5 +1,6 @@
 #include "SpartaGameState.h"
 #include "Kismet/GameplayStatics.h"
+#include "BaseItem.h"
 #include "SpawnVolume.h"
 #include "CoinItem.h"
 #include "SpartaGameInstance.h"
@@ -76,7 +77,7 @@ void ASpartaGameState::OnGameOver()
         if (ASpartaPlayerController* SpartaPlayerController = Cast<ASpartaPlayerController>(PlayerController))
         {
             SpartaPlayerController->SetPause(true);
-            SpartaPlayerController->ShowMainMenu(true);
+            SpartaPlayerController->ShowGameOver();
         }
     }
 }
@@ -192,7 +193,8 @@ void ASpartaGameState::EndWave()
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABaseItem::StaticClass(), FoundItems);
     for (auto Item : FoundItems)
     {
-        Item->Destroy();
+        ABaseItem* BaseItem = Cast<ABaseItem>(Item);
+        BaseItem->DestroyItem();
     }
 
     // Todo. 일정 시간 동안 대기 후 다음 레벨 시작
@@ -295,11 +297,11 @@ void ASpartaGameState::UpdateHUD()
                 {
                     if (bIsWaveWating)
                     {
-                        CoinCntText->SetText(FText::FromString(FString::Printf(TEXT(": 0 / 0"))));
+                        CoinCntText->SetText(FText::FromString(FString::Printf(TEXT("0 / 0"))));
                     }
                     else
                     {
-                        CoinCntText->SetText(FText::FromString(FString::Printf(TEXT(": %d / %d"), CollectedCoinCnt, SpawnedCoinCnt)));
+                        CoinCntText->SetText(FText::FromString(FString::Printf(TEXT("%d / %d"), CollectedCoinCnt, SpawnedCoinCnt)));
                     }
                 }
             }

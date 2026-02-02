@@ -82,9 +82,12 @@ void AMineItem::Explode()
         FTimerHandle DestoryParticleTimerHandle;
         GetWorld()->GetTimerManager().SetTimer(
             DestoryParticleTimerHandle,
-            [Particle]()
+            [this, Particle]()
             {
-                Particle->DestroyComponent();
+                if (IsValid(this) && IsValid(Particle))
+                {
+                    Particle->DestroyComponent();
+                }
             },
             1.0f,
             false

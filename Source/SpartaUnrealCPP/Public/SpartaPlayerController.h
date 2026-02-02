@@ -21,9 +21,12 @@ public:
 	void ShowGameHUD();
 	
 	UFUNCTION(BlueprintCallable, Category = "MainMenu")
-	void ShowMainMenu(bool bIsRestart);
+	void ShowMainMenu();
 	UFUNCTION(BlueprintCallable, Category = "MainMenu")
 	void StartGame();
+
+	UFUNCTION(BlueprintCallable, Category = "GameOver")
+	void ShowGameOver();
 
 protected:
 	virtual void BeginPlay() override;
@@ -52,9 +55,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "HUD")
 	UUserWidget* HUDWidgetInstance;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MainMenu")
 	TSubclassOf<UUserWidget> MainMenuWidgetClass;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "HUD")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MainMenu")
 	UUserWidget* MainMenuWidgetInstance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MainMenu")
+	TSubclassOf<UUserWidget> GameOverWidgetClass;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MainMenu")
+	UUserWidget* GameOverWidgetInstance;
 
 };
