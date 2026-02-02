@@ -29,9 +29,9 @@ ASpartaCharacter::ASpartaCharacter()
 		CameraComp->bUsePawnControlRotation = false;
 	}
 
-	OverheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
+	/*OverheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
 	OverheadWidget->SetupAttachment(GetMesh());
-	OverheadWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	OverheadWidget->SetWidgetSpace(EWidgetSpace::Screen);*/
 
 	NormalSpeed = 600.0f;
 	SprintSpeedMultiplier = 1.7f;
@@ -47,7 +47,7 @@ void ASpartaCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	UpdateOverheadHP();
+	//UpdateOverheadHP();
 }
 
 
@@ -123,7 +123,7 @@ float ASpartaCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 
 	Health = FMath::Clamp(Health - DamageAmount, 0.0f, MaxHealth);
 	UE_LOG(LogTemp, Warning, TEXT("Health decreased to %f"), Health);
-	UpdateOverheadHP();
+	//UpdateOverheadHP();
 	if(Health<=0.0f)
 	{
 		OnDeath();
@@ -197,7 +197,7 @@ void ASpartaCharacter::AddHealth(float Amount)
 {
 	Health = FMath::Clamp(Health + Amount, 0.0f, MaxHealth);
 	UE_LOG(LogTemp, Warning, TEXT("Health increased to %f"), Health);
-	UpdateOverheadHP();
+	//UpdateOverheadHP();
 }
 
 void ASpartaCharacter::OnDeath()
@@ -209,16 +209,16 @@ void ASpartaCharacter::OnDeath()
 	}
 }
 
-void ASpartaCharacter::UpdateOverheadHP()
-{
-	if (!OverheadWidget) return;
-
-	UUserWidget* OverheadWidgetInstance = OverheadWidget->GetUserWidgetObject();
-	if (!OverheadWidgetInstance) return;
-
-	if (UTextBlock* HPText = Cast<UTextBlock>(OverheadWidgetInstance->GetWidgetFromName(TEXT("OverHeadHP"))))
-	{
-		HPText->SetText(FText::FromString(FString::Printf(TEXT("%.0f / %.0f"), Health, MaxHealth)));
-	}
-}
+//void ASpartaCharacter::UpdateOverheadHP()
+//{
+//	if (!OverheadWidget) return;
+//
+//	UUserWidget* OverheadWidgetInstance = OverheadWidget->GetUserWidgetObject();
+//	if (!OverheadWidgetInstance) return;
+//
+//	if (UTextBlock* HPText = Cast<UTextBlock>(OverheadWidgetInstance->GetWidgetFromName(TEXT("OverHeadHP"))))
+//	{
+//		HPText->SetText(FText::FromString(FString::Printf(TEXT("%.0f / %.0f"), Health, MaxHealth)));
+//	}
+//}
 

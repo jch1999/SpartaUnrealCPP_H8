@@ -3,8 +3,7 @@
 
 ASpawnVolume::ASpawnVolume()
     :Scene(nullptr),
-    SpawningBox(nullptr),
-    ItemDataTable(nullptr)
+    SpawningBox(nullptr)
 {
     Scene = CreateDefaultSubobject<USceneComponent>(TEXT("Scene"));
     SetRootComponent(Scene);
@@ -43,13 +42,15 @@ AActor* ASpawnVolume::SpawnItem(TSubclassOf<AActor> ItemClass)
     return SpawnedActor;
 }
 
-FItemSpawnRow* ASpawnVolume::GetRandomItem() const
+FItemSpawnRow* ASpawnVolume::GetRandomItem(int32 DBIdx) const
 {
-    if (!ItemDataTable) return nullptr;
+    if (!ItemDataTables.IsValidIndex(DBIdx)) return nullptr;
     
     TArray<FItemSpawnRow*> AllRows;
     static const FString ContextString(TEXT("ItemSpawnContext"));
-    ItemDataTable->GetAllRows(ContextString, AllRows);
+    // ItemDataTables[DBIdx].Get()->GetAllRows(ContextString, AllRows);
+    UDataTable* DT = ItemDataTables[DBIdx].LoadSynchronous();
+    DT->GetAllRows(ContextString, AllRows);
     // 첫 번째 인자 : 가져오고자 하는 행을가져오지 못햇을 때 어디의 것인지 출력하기 위한 문자열
 
     if (AllRows.IsEmpty()) return nullptr;
@@ -80,9 +81,9 @@ FItemSpawnRow* ASpawnVolume::GetRandomItem() const
     return nullptr;
 }
 
-AActor* ASpawnVolume::SpawnRandomItem()
+AActor* ASpawnVolume::SpawnRandomItem(int32 DBIdx)
 {
-    if (FItemSpawnRow* SelectedRow = GetRandomItem())
+    if (FItemSpawnRow* SelectedRow = GetRandomItem(DBIdx))
     {
         // TSubclasOf에서 저장중인 클래스 정보를 UClass* 로 가져오는 함수
         if (UClass* ActualClass = SelectedRow->ItemClass.Get())

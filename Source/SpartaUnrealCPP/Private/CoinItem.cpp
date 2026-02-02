@@ -5,6 +5,8 @@ ACoinItem::ACoinItem()
 {
     PointValue = 0;
     ItemType = "DefaultCoin";
+    RotateSpeed = 180.0f;
+    PrimaryActorTick.bCanEverTick = true;
 }
 
 void ACoinItem::ActivateItem(AActor* Activator)
@@ -25,6 +27,13 @@ void ACoinItem::ActivateItem(AActor* Activator)
         }
         DestroyItem();
     }
+}
+
+void ACoinItem::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+
+    AddActorLocalRotation(FRotator(0, RotateSpeed * DeltaTime, 0));
 }
 
 

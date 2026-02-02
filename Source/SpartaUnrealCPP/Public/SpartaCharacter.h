@@ -47,7 +47,7 @@ public:
 	UFUNCTION()
 	void OnDeath();
 
-	void UpdateOverheadHP();
+	// void UpdateOverheadHP();
 
 public:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "Camera")
@@ -55,8 +55,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent* CameraComp;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="UI")
-	UWidgetComponent* OverheadWidget;
+	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="UI")
+	UWidgetComponent* OverheadWidget*/;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	int JumpCnt;

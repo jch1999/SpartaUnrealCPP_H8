@@ -16,7 +16,11 @@ public:
 protected:
 	virtual void ActivateItem(AActor* Activator) override;
 
+	virtual void Tick(float DeltaTime) override;
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item")
 	int32 PointValue;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item")
+	float RotateSpeed;
 };

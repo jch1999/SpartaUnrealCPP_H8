@@ -19,7 +19,9 @@ ASpartaPlayerController::ASpartaPlayerController()
     HUDWidgetClass(nullptr),
     HUDWidgetInstance(nullptr),
     MainMenuWidgetClass(nullptr),
-    MainMenuWidgetInstance(nullptr)
+    MainMenuWidgetInstance(nullptr),
+    GameOverWidgetClass(nullptr),
+    GameOverWidgetInstance(nullptr)
 {
 }
 
@@ -47,7 +49,7 @@ void ASpartaPlayerController::BeginPlay()
     FString CurrentMapName = GetWorld()->GetMapName();
     if (CurrentMapName.Contains("MainMenu"))
     {
-        ShowMainMenu(false);
+        ShowMainMenu();
     }
 }
 
@@ -65,41 +67,10 @@ void ASpartaPlayerController::SetupInputComponent()
 
 void ASpartaPlayerController::SwitchingIMC(const FInputActionValue& Value)
 {
-    ShowMainMenu(true);
-    /*if (ULocalPlayer* LocalPlayer = GetLocalPlayer())
-    {
-        if (UEnhancedInputLocalPlayerSubsystem* Subsystem =
-            LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
-        {
-            if (InputMappingContext && Subsystem->HasMappingContext(InputMappingContext))
-            {
-                Subsystem->RemoveMappingContext(InputMappingContext);
-                if (InputMappingContext_UI)
-                {
-                    Subsystem->AddMappingContext(InputMappingContext_UI, 0);
-                    if (GEngine)
-                    {
-                        GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Change to InputMappingContext_UI"));
-                    }
-                }
-            }
-            else if (InputMappingContext_UI && Subsystem->HasMappingContext(InputMappingContext_UI))
-            {
-                Subsystem->RemoveMappingContext(InputMappingContext_UI);
-                if (InputMappingContext)
-                {
-                    Subsystem->AddMappingContext(InputMappingContext, 0);
-                    if (GEngine)
-                    {
-                        GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Change to InputMappingContext"));
-                    }
-                }
-            }
-        }
-    }*/
+    ShowMainMenu();
 }
 
-void ASpartaPlayerController::ShowMainMenu(bool bIsRestart)
+void ASpartaPlayerController::ShowMainMenu()
 {
     if (HUDWidgetInstance)
     {
@@ -111,6 +82,12 @@ void ASpartaPlayerController::ShowMainMenu(bool bIsRestart)
     {
         MainMenuWidgetInstance->RemoveFromParent();
         MainMenuWidgetInstance = nullptr;
+    }
+
+    if (GameOverWidgetInstance)
+    {
+        GameOverWidgetInstance->RemoveFromParent();
+        GameOverWidgetInstance = nullptr;
     }
 
     if (MainMenuWidgetClass)
@@ -124,38 +101,9 @@ void ASpartaPlayerController::ShowMainMenu(bool bIsRestart)
             SetInputMode(FInputModeUIOnly());
             SetPause(true);
         }
-
-        if (UTextBlock* ButtonText = Cast<UTextBlock>(MainMenuWidgetInstance->GetWidgetFromName(TEXT("StartButtonText"))))
-        {
-            if (bIsRestart)
-            {
-                ButtonText->SetText(FText::FromString(TEXT("Restart")));
-            }
-            else
-            {
-                ButtonText->SetText(FText::FromString(TEXT("Start")));
-            }
-        }
-        if (bIsRestart)
-        {
-            UFunction* PlayAnimFunc = MainMenuWidgetInstance->FindFunction(FName("PlayGameOverAnim"));
-            if (PlayAnimFunc)
-            {
-                MainMenuWidgetInstance->ProcessEvent(PlayAnimFunc, nullptr);
-            }
-
-            if (UTextBlock* TotalScoreText = Cast<UTextBlock>(MainMenuWidgetInstance->GetWidgetFromName("TotalScoreText")))
-            {
-                if (USpartaGameInstance* SpartaGameInstance =  Cast<USpartaGameInstance>(UGameplayStatics::GetGameInstance(this)))
-                    {
-                    TotalScoreText->SetText(FText::FromString(
-                        FString::Printf(TEXT("Total Score: %d"), SpartaGameInstance->TotalScore)
-                        ));
-                    }
-            }
-        }
     }
 }
+
 void ASpartaPlayerController::ShowGameHUD()
 {
     if (HUDWidgetInstance)
@@ -168,6 +116,12 @@ void ASpartaPlayerController::ShowGameHUD()
     {
         MainMenuWidgetInstance->RemoveFromParent();
         MainMenuWidgetInstance = nullptr;
+    }
+
+    if (GameOverWidgetInstance)
+    {
+        GameOverWidgetInstance->RemoveFromParent();
+        GameOverWidgetInstance = nullptr;
     }
 
     if (HUDWidgetClass)
@@ -199,4 +153,44 @@ void ASpartaPlayerController::StartGame()
 
     UGameplayStatics::OpenLevel(GetWorld(), FName("BasicLevel"));
     SetPause(true);
+}
+
+void ASpartaPlayerController::ShowGameOver()
+{
+    if (HUDWidgetInstance)
+    {
+        HUDWidgetInstance->RemoveFromParent();
+        HUDWidgetInstance = nullptr;
+    }
+
+    if (MainMenuWidgetInstance)
+    {
+        MainMenuWidgetInstance->RemoveFromParent();
+        MainMenuWidgetInstance = nullptr;
+    }
+
+    if (GameOverWidgetInstance)
+    {
+        GameOverWidgetInstance->RemoveFromParent();
+        GameOverWidgetInstance = nullptr;
+    }
+    
+    if (GameOverWidgetClass)
+    {
+        GameOverWidgetInstance = CreateWidget<UUserWidget>(this, GameOverWidgetClass);
+        if (GameOverWidgetInstance)
+        {
+            GameOverWidgetInstance->AddToViewport();
+
+            bShowMouseCursor = true;
+            SetInputMode(FInputModeUIOnly());
+            SetPause(true);
+
+            UFunction* PlayAnimFunc = GameOverWidgetInstance->FindFunction(FName("PlayGameOverAnim"));
+            if (IsValid(PlayAnimFunc))
+            {
+                GameOverWidgetInstance->ProcessEvent(PlayAnimFunc, nullptr);
+            }
+        }
+    }
 }

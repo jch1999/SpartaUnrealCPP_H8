@@ -14,6 +14,8 @@ class SPARTAUNREALCPP_API ABaseItem : public AActor, public IItemInterface
 	
 public:	
 	ABaseItem();
+	
+	virtual void DestroyItem();
 
 protected:
 	virtual void OnItemOverlap(
@@ -30,7 +32,6 @@ protected:
 		int32 OtherBodyIndex) override;
 	virtual void ActivateItem(AActor* Activator) override;
 	virtual FName GetItemType() const override;
-	virtual void DestroyItem();
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item|Component")
