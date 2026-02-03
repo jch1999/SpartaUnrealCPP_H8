@@ -5,9 +5,11 @@
 #include "CoinItem.h"
 #include "SpartaGameInstance.h"
 #include "SpartaPlayerController.h"
+#include "SpartaCharacter.h"
 #include "SpartaGameInstance.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/TextBlock.h"
+#include "Components/Image.h"
 
 ASpartaGameState::ASpartaGameState()
 {
@@ -24,6 +26,7 @@ ASpartaGameState::ASpartaGameState()
     WaveWaitDuration = 5.0f;
     bIsWaveWating = true;
     ItemMaxSpawnCntPerWave = { 20, 30, 40 };
+    bIsDizzy = false;
 }
 
 void ASpartaGameState::BeginPlay()
@@ -305,7 +308,36 @@ void ASpartaGameState::UpdateHUD()
                     }
                 }
             }
+
+            if (UUserWidget* HUDWidget = SpartaPlayerController->GetHUDWidget())
+            {
+                if (UImage* DizzyIcon = Cast<UImage>(HUDWidget->GetWidgetFromName(TEXT("DizzyIcon"))))
+                {
+                    DizzyIcon->SetVisibility(bIsDizzy ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+                }
+            }
+
+            if (UUserWidget* HUDWidget = SpartaPlayerController->GetHUDWidget())
+            {
+                if (UTextBlock* DizzyTimeText = Cast<UTextBlock>(HUDWidget->GetWidgetFromName(TEXT("DizzyTimeText"))))
+                {
+                    DizzyTimeText->SetVisibility(bIsDizzy ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+                    if (bIsDizzy)
+                    {
+                        if (ASpartaCharacter* Character = Cast<ASpartaCharacter>(PlayerController->GetPawn()))
+                        {
+                            float RemainingTime = GetWorldTimerManager().GetTimerRemaining(Character->MoveReverseTimer);
+                            DizzyTimeText->SetText(FText::FromString(FString::Printf(TEXT("%.1f"), RemainingTime)));
+                        }
+                    }
+                }
+            }
         }
     }
 
+}
+
+void ASpartaGameState::SetDizzy(bool IsDizzy)
+{
+    bIsDizzy = IsDizzy;
 }

@@ -48,6 +48,10 @@ public:
 	void OnDeath();
 
 	// void UpdateOverheadHP();
+	UFUNCTION()
+	void StartDizzy(float DizzyTime);
+
+	void SetDizzy(bool IsDizzy);
 
 public:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "Camera")
@@ -68,13 +72,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float MaxHealth;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move")
-	bool bIsReverse;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BadStatus")
+	bool bIsDizzy;
 
+	FTimerHandle MoveReverseTimer;
 private:
 	float NormalSpeed;
 	float SprintSpeedMultiplier;
 	float SprintSpeed;
 
-	FTimerHandle MoveReverseTimer;
 };

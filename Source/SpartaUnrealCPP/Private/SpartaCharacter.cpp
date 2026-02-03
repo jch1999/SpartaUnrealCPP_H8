@@ -11,7 +11,7 @@
 ASpartaCharacter::ASpartaCharacter()
 	:JumpCnt(0),
 	MouseSensitivity(1.0f),
-	bIsReverse(false)
+	bIsDizzy(false)
 {
 	PrimaryActorTick.bCanEverTick = false;
 
@@ -140,11 +140,11 @@ void ASpartaCharacter::Move(const FInputActionValue& Value)
 
 	if (!FMath::IsNearlyZero(MoveInput.X))
 	{
-		AddMovementInput(GetActorForwardVector(), bIsReverse ? -MoveInput.X : MoveInput.X);
+		AddMovementInput(GetActorForwardVector(), bIsDizzy ? -MoveInput.X : MoveInput.X);
 	}
 	if (!FMath::IsNearlyZero(MoveInput.Y))
 	{
-		AddMovementInput(GetActorRightVector(), bIsReverse ? -MoveInput.Y : MoveInput.Y);
+		AddMovementInput(GetActorRightVector(), bIsDizzy ? -MoveInput.Y : MoveInput.Y);
 	}
 }
 
@@ -211,6 +211,34 @@ void ASpartaCharacter::OnDeath()
 	if (SpartaGameState)
 	{
 		SpartaGameState->OnGameOver();
+	}
+}
+
+void ASpartaCharacter::StartDizzy(float DizzyTime)
+{
+	SetDizzy(true);
+	GetWorld()->GetTimerManager().ClearTimer(MoveReverseTimer);
+
+	GetWorld()->GetTimerManager().SetTimer(
+		MoveReverseTimer,
+		[this]() {
+			if (IsValid(this))
+			{
+				this->SetDizzy(false);
+			}
+		},
+		DizzyTime,
+		false
+	);
+}
+
+void ASpartaCharacter::SetDizzy(bool IsDizzy)
+{
+	bIsDizzy = IsDizzy;
+	ASpartaGameState* SpartaGameState = GetWorld() ? GetWorld()->GetGameState<ASpartaGameState>() : nullptr;
+	if (SpartaGameState)
+	{
+		SpartaGameState->SetDizzy(IsDizzy);
 	}
 }
 
