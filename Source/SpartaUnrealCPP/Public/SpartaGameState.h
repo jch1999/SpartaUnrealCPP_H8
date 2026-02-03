@@ -40,6 +40,8 @@ public:
 
 	void UpdateHUD();
 
+	void SetDizzy(bool IsDizzy);
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Score")
 	int32 Score;
@@ -76,6 +78,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Level")
 	TArray<int32> ItemMaxSpawnCntPerWave;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "BadStatus")
+	bool bIsDizzy;
 
 	FTimerHandle LevelTimerHandle;
 	FTimerHandle WaveTimerHandle;
